@@ -1,0 +1,13 @@
+version: '3.5'
+
+services:
+  postgres:
+    container_name: post_container
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_USER: post
+      POSTGRES_PASSWORD: post
+      POSTGRES_DB: post_db
+    ports:
+      - "5500:5432"
