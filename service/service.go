@@ -35,6 +35,16 @@ func FindUser(c *gin.Context, dLI dto.DtoLogIn) (model.Tables, error) {
 	return repository.FindByEmail(aMap), nil
 }
 
+func GetUserByID(c *gin.Context, dGUI dto.GetUserById) (model.Tables, error) {
+	aMap := mapper.MapperGetUserById(&dGUI)
+
+	return repository.GetInfoByIdFromDatabase(int(aMap.ID))
+}
+
+func GetUsers(c *gin.Context) ([]model.Tables, error) {
+	return repository.GetInfosFromDatabase()
+}
+
 // service
 func setValues(person *model.Tables) error {
 	person.Password, _ = middleware.HashPassword(person.Password)

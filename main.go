@@ -9,6 +9,7 @@ import (
 	"postgre-project/service"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 func main() {
@@ -37,23 +38,29 @@ func main() {
 	})
 
 	// GetResult
-	// resById, errId := repository.GetInfoByIdFromDatabase(5)
+	resById, errId := service.GetUserByID(&c, dto.GetUserById{
+		Model: gorm.Model{
+			ID: 5,
+		},
+	})
 
 	// GetResults
-	// res, errRes := repository.GetInfosFromDatabase()
+	res, errRes := service.GetUsers(&c)
 
 	// RESULTS
 	pl := fmt.Printf
 
 	pl("\nFinding: \n%v\n", find)
 	pl("\nError: \n%v\n", errFind)
-	// pl("\nResult By ID: \n%v\n", resById)
-	// pl("\nError Result ID: \n%v\n", errId)
-	// pl("\nResults: \n%v\n", res)
-	// for _, v := range res {
-	// 	pl("\nResults: \n%v   ---   %v\n", v.Email, v.Password)
-	// }
-	// pl("\nError Results: \n%v\n", errRes)
+
+	pl("\nResult By ID: \n%v\n", resById)
+	pl("\nError Result ID: \n%v\n", errId)
+
+	pl("\nResults: \n%v\n", res)
+	for _, v := range res {
+		pl("\nResults: \n%v   ---   %v\n", v.Email, v.Password)
+	}
+	pl("\nError Results: \n%v\n", errRes)
 
 	database.CloseDB()
 }
