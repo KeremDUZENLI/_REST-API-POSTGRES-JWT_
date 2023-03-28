@@ -9,7 +9,7 @@ import (
 )
 
 func Authenticate(c *gin.Context) {
-	clientToken := c.Request.Header.Get("token")
+	clientToken := c.Request.Header.Get("client_token")
 	if !tokenIsExist(c, clientToken) || !tokenIsValid(c, clientToken) {
 		return
 	}

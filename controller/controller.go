@@ -57,6 +57,7 @@ func GetUsers(c *gin.Context) {
 	usersList, err := service.GetUsersAll(c)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 
 	c.JSON(http.StatusOK, usersList)

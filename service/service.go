@@ -7,6 +7,7 @@ import (
 	"postgre-project/dto"
 	"postgre-project/dto/mapper"
 	"postgre-project/middleware"
+	"postgre-project/middleware/auth"
 	"postgre-project/middleware/token"
 	"postgre-project/repository"
 
@@ -41,6 +42,10 @@ func GetUserByID(c *gin.Context, personId int) (model.Tables, error) {
 }
 
 func GetUsersAll(c *gin.Context) ([]model.Tables, error) {
+	if err := auth.IsAdmin(c); err != nil {
+		return []model.Tables{}, err
+	}
+
 	return repository.GetInfosFromDatabase()
 }
 
