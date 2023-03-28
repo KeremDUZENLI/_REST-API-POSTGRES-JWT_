@@ -12,15 +12,33 @@ import (
 	"gorm.io/gorm"
 )
 
-func main() {
-	var c gin.Context
+var c gin.Context
+var pl = fmt.Printf
 
-	// Database
+func main() {
+
+	// Database Open
 	env.Load()
 	database.ConnectDB()
 	database.Instance.AutoMigrate(&model.Tables{})
 
 	// SignUp
+	signUp()
+
+	// LogIn
+	logIn()
+
+	// GetResult
+	getResult()
+
+	// GetResults
+	getResults()
+
+	// Database Close
+	database.CloseDB()
+}
+
+func signUp() {
 	service.CreateUser(&c, dto.DtoSignUp{
 		Password:     "aaa",
 		Token:        "",
@@ -30,37 +48,35 @@ func main() {
 		Email:        "aaa",
 		UserType:     "",
 	})
+}
 
-	// LogIn
+func logIn() {
 	find, errFind := service.FindUser(&c, dto.DtoLogIn{
-		Email:    "aaa",
+		Email:    "aaaa",
 		Password: "aaa",
 	})
 
-	// GetResult
+	pl("\nFinding: \n%v\n", find)
+	pl("\nError: \n%v\n", errFind)
+}
+
+func getResult() {
 	resById, errId := service.GetUserByID(&c, dto.GetUserById{
 		Model: gorm.Model{
-			ID: 5,
+			ID: 1,
 		},
 	})
 
-	// GetResults
-	res, errRes := service.GetUsers(&c)
-
-	// RESULTS
-	pl := fmt.Printf
-
-	pl("\nFinding: \n%v\n", find)
-	pl("\nError: \n%v\n", errFind)
-
 	pl("\nResult By ID: \n%v\n", resById)
 	pl("\nError Result ID: \n%v\n", errId)
+}
 
-	pl("\nResults: \n%v\n", res)
+func getResults() {
+	res, errRes := service.GetUsers(&c)
+
 	for _, v := range res {
 		pl("\nResults: \n%v   ---   %v\n", v.Email, v.Password)
 	}
+	// pl("\nResults: \n%v\n", res)
 	pl("\nError Results: \n%v\n", errRes)
-
-	database.CloseDB()
 }

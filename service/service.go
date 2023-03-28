@@ -32,7 +32,7 @@ func FindUser(c *gin.Context, dLI dto.DtoLogIn) (model.Tables, error) {
 		return model.Tables{}, errors.New("not valid")
 	}
 
-	return repository.FindByEmail(aMap), nil
+	return repository.FindByEmail(aMap)
 }
 
 func GetUserByID(c *gin.Context, dGUI dto.GetUserById) (model.Tables, error) {
@@ -62,13 +62,13 @@ func setValues(person *model.Tables) error {
 }
 
 func isUserExist(person model.Tables) bool {
-	finding := repository.FindByEmail(person)
+	_, err := repository.FindByEmail(person)
 
-	return finding.Email != ""
+	return err == nil
 }
 
 func isPasswordExist(person model.Tables, password string) bool {
-	finding := repository.FindByEmail(person)
+	finding, _ := repository.FindByEmail(person)
 	err := bcrypt.CompareHashAndPassword([]byte(finding.Password), []byte(password))
 
 	return err == nil

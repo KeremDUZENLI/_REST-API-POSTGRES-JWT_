@@ -10,13 +10,15 @@ func AddToDatabase(person model.Tables) {
 	database.Instance.Table(model.TABLE).Create(&person)
 }
 
-func FindByEmail(person model.Tables) model.Tables {
-	database.Instance.
+func FindByEmail(person model.Tables) (model.Tables, error) {
+	if err := database.Instance.
 		Table(model.TABLE).
 		Where("email = ?", person.Email).
-		Find(&person)
+		First(&person).Error; err != nil {
+		return model.Tables{}, errors.New("email not found")
+	}
 
-	return person
+	return person, nil
 }
 
 func GetInfoByIdFromDatabase(id int) (model.Tables, error) {
