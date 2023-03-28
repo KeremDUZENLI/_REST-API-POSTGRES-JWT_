@@ -14,15 +14,16 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func CreateUser(c *gin.Context, dSU dto.DtoSignUp) {
+func CreateUser(c *gin.Context, dSU dto.DtoSignUp) error {
 	aMap := mapper.MapperSignUp(&dSU)
 
 	if isUserExist(aMap) {
-		return
+		return errors.New("user already exists")
 	}
 
 	setValues(&aMap)
 	repository.AddToDatabase(aMap)
+	return nil
 }
 
 func FindUser(c *gin.Context, dLI dto.DtoLogIn) (model.Tables, error) {
@@ -39,7 +40,7 @@ func GetUserByID(c *gin.Context, personId int) (model.Tables, error) {
 	return repository.GetInfoByIdFromDatabase(personId)
 }
 
-func GetUsers(c *gin.Context) ([]model.Tables, error) {
+func GetUsersAll(c *gin.Context) ([]model.Tables, error) {
 	return repository.GetInfosFromDatabase()
 }
 

@@ -6,6 +6,7 @@ import (
 	"postgre-project/database"
 	"postgre-project/database/model"
 	"postgre-project/dto"
+	"postgre-project/router"
 	"postgre-project/service"
 
 	"github.com/gin-gonic/gin"
@@ -18,17 +19,14 @@ func main() {
 	database.ConnectDB()
 	database.Instance.AutoMigrate(&model.Tables{})
 
-	// SignUp
-	signUp()
+	// Service
+	// signUp()
+	// logIn()
+	// getResultById()
+	// getResults()
 
-	// LogIn
-	logIn()
-
-	// GetResult
-	getResultById()
-
-	// GetResults
-	getResults()
+	// Router
+	router.Router()
 
 	// Database Close
 	database.CloseDB()
@@ -67,7 +65,7 @@ func getResultById() {
 }
 
 func getResults() {
-	res, errRes := service.GetUsers(&c)
+	res, errRes := service.GetUsersAll(&c)
 
 	for _, v := range res {
 		pl("\nResults: \n%v   ---   %v\n", v.Email, v.Password)
