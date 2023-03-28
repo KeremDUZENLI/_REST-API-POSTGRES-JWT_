@@ -21,7 +21,7 @@ func AddToDatabase(dSU dto.DtoSignUp) {
 
 	setValues(&aMap)
 
-	database.Instance.Create(&aMap)
+	database.Instance.Table(model.TABLE).Create(&aMap)
 }
 
 func FindInDatabase(dLI dto.DtoLogIn) (model.Tables, error) {
@@ -32,6 +32,24 @@ func FindInDatabase(dLI dto.DtoLogIn) (model.Tables, error) {
 	}
 
 	return findByEmail(aMap)
+}
+
+func GetInfoByIdFromDatabase(id int) (model.Tables, error) {
+	var person model.Tables
+	if err := database.Instance.Table(model.TABLE).Where("id = ?", id).First(&person).Error; err != nil {
+		return model.Tables{}, errors.New("id not found")
+	}
+
+	return person, nil
+}
+
+func GetInfosFromDatabase() ([]model.Tables, error) {
+	var infos []model.Tables
+	if err := database.Instance.Table(model.TABLE).Find(&infos).Error; err != nil {
+		return []model.Tables{}, errors.New("nothing found")
+	}
+
+	return infos, nil
 }
 
 // service
