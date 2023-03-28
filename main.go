@@ -6,10 +6,13 @@ import (
 	"postgre-project/database"
 	"postgre-project/database/model"
 	"postgre-project/dto"
-	"postgre-project/repository"
+	"postgre-project/service"
+
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
+	var c gin.Context
 
 	// Database
 	env.Load()
@@ -17,7 +20,7 @@ func main() {
 	database.Instance.AutoMigrate(&model.Tables{})
 
 	// SignUp
-	repository.AddToDatabase(dto.DtoSignUp{
+	service.CreateUser(&c, dto.DtoSignUp{
 		Password:     "aaa",
 		Token:        "",
 		RefreshToken: "",
@@ -28,29 +31,29 @@ func main() {
 	})
 
 	// LogIn
-	find, errFind := repository.FindInDatabase(dto.DtoLogIn{
+	find, errFind := service.FindUser(&c, dto.DtoLogIn{
 		Email:    "aaa",
 		Password: "aaa",
 	})
 
 	// GetResult
-	resById, errId := repository.GetInfoByIdFromDatabase(5)
+	// resById, errId := repository.GetInfoByIdFromDatabase(5)
 
 	// GetResults
-	res, errRes := repository.GetInfosFromDatabase()
+	// res, errRes := repository.GetInfosFromDatabase()
 
 	// RESULTS
 	pl := fmt.Printf
 
 	pl("\nFinding: \n%v\n", find)
 	pl("\nError: \n%v\n", errFind)
-	pl("\nResult By ID: \n%v\n", resById)
-	pl("\nError Result ID: \n%v\n", errId)
+	// pl("\nResult By ID: \n%v\n", resById)
+	// pl("\nError Result ID: \n%v\n", errId)
 	// pl("\nResults: \n%v\n", res)
-	for _, v := range res {
-		pl("\nResults: \n%v   ---   %v\n", v.Email, v.Password)
-	}
-	pl("\nError Results: \n%v\n", errRes)
+	// for _, v := range res {
+	// 	pl("\nResults: \n%v   ---   %v\n", v.Email, v.Password)
+	// }
+	// pl("\nError Results: \n%v\n", errRes)
 
 	database.CloseDB()
 }
