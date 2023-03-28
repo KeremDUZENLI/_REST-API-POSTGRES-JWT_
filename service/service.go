@@ -35,10 +35,8 @@ func FindUser(c *gin.Context, dLI dto.DtoLogIn) (model.Tables, error) {
 	return repository.FindByEmail(aMap)
 }
 
-func GetUserByID(c *gin.Context, dGUI dto.GetUserById) (model.Tables, error) {
-	aMap := mapper.MapperGetUserById(&dGUI)
-
-	return repository.GetInfoByIdFromDatabase(int(aMap.ID))
+func GetUserByID(c *gin.Context, personId int) (model.Tables, error) {
+	return repository.GetInfoByIdFromDatabase(personId)
 }
 
 func GetUsers(c *gin.Context) ([]model.Tables, error) {

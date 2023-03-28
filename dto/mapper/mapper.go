@@ -3,8 +3,6 @@ package mapper
 import (
 	"postgre-project/database/model"
 	"postgre-project/dto"
-
-	"gorm.io/gorm"
 )
 
 // SignUp
@@ -30,12 +28,5 @@ func MapperLogIn(d *dto.DtoLogIn) model.Tables {
 }
 
 // GetUserById
-func MapperGetUserById(d *dto.GetUserById) model.Tables {
-	return model.Tables{
-		Model: gorm.Model{
-			ID: d.ID,
-		},
-	}
-}
 
 // GetUsers

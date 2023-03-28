@@ -1,7 +1,5 @@
 package dto
 
-import "gorm.io/gorm"
-
 // SignUp
 type DtoSignUp struct {
 	Password     string `gorm:"column:password"`
@@ -21,8 +19,5 @@ type DtoLogIn struct {
 }
 
 // GetUserById
-type GetUserById struct {
-	gorm.Model
-}
 
 // GetUsers

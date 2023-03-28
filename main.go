@@ -9,11 +9,7 @@ import (
 	"postgre-project/service"
 
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 )
-
-var c gin.Context
-var pl = fmt.Printf
 
 func main() {
 
@@ -29,7 +25,7 @@ func main() {
 	logIn()
 
 	// GetResult
-	getResult()
+	getResultById()
 
 	// GetResults
 	getResults()
@@ -37,6 +33,9 @@ func main() {
 	// Database Close
 	database.CloseDB()
 }
+
+var c gin.Context
+var pl = fmt.Printf
 
 func signUp() {
 	service.CreateUser(&c, dto.DtoSignUp{
@@ -60,12 +59,8 @@ func logIn() {
 	pl("\nError: \n%v\n", errFind)
 }
 
-func getResult() {
-	resById, errId := service.GetUserByID(&c, dto.GetUserById{
-		Model: gorm.Model{
-			ID: 1,
-		},
-	})
+func getResultById() {
+	resById, errId := service.GetUserByID(&c, 1)
 
 	pl("\nResult By ID: \n%v\n", resById)
 	pl("\nError Result ID: \n%v\n", errId)
