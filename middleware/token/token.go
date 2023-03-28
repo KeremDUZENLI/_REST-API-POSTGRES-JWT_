@@ -47,3 +47,20 @@ func GenerateToken(firstName string, lastName string, email string, userType str
 
 	return
 }
+
+func ValidateToken(signedToken string) (*SignedDetails, error) {
+	token, err := jwt.ParseWithClaims(
+		signedToken,
+		&SignedDetails{},
+		keyFunction,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return token.Claims.(*SignedDetails), nil
+}
+
+func keyFunction(token *jwt.Token) (any, error) {
+	return []byte(env.SECRET_KEY), nil
+}

@@ -44,7 +44,7 @@ func GetUsersAll(c *gin.Context) ([]model.Tables, error) {
 	return repository.GetInfosFromDatabase()
 }
 
-// service
+// ----------------------------------------------------------------
 func setValues(person *model.Tables) error {
 	person.Password, _ = middleware.HashPassword(person.Password)
 	_, errPassword := middleware.HashPassword(person.Password)
