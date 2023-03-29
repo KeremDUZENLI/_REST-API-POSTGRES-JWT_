@@ -8,9 +8,7 @@ import (
 // SignUp
 func MapperSignUp(d *dto.DtoSignUp) model.Tables {
 	return model.Tables{
-		Password: d.Password,
-		Token:    d.Token,
-
+		Password:  d.Password,
 		FirstName: d.FirstName,
 		LastName:  d.LastName,
 		Email:     d.Email,

@@ -12,13 +12,14 @@ import (
 	"postgre-project/repository"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
 	"golang.org/x/crypto/bcrypt"
 )
 
 func CreateUser(c *gin.Context, dSU dto.DtoSignUp) error {
 	aMap := mapper.MapperSignUp(&dSU)
-	if isUserExist(aMap) {
-		return errors.New("user already exists")
+	if isUserExist(aMap) || !isObeyRules(aMap) {
+		return errors.New("user already exists or can not created because out of rules")
 	}
 
 	setValues(&aMap)
@@ -35,14 +36,14 @@ func FindUser(c *gin.Context, dLI dto.DtoLogIn) (logIn model.Tables, errLogIn er
 	}
 
 	if !isEmailValid(aMap.Email, logIn.Email) || !isPasswordValid(logIn.Password, aMap.Password) {
-		return model.Tables{}, errors.New("not valid")
+		return model.Tables{}, errors.New("email or password is not valid")
 	}
 
-	if err := update(logIn); err != nil {
+	if err := updateTokenUpdatedat(logIn); err != nil {
 		return
 	}
 
-	return
+	return repository.GetInfoByIdFromDatabase(int(logIn.ID))
 }
 
 func GetUserByID(c *gin.Context, personId int) (model.Tables, error) {
@@ -82,6 +83,10 @@ func isUserExist(person model.Tables) bool {
 	return err == nil
 }
 
+func isObeyRules(person model.Tables) bool {
+	return validator.New().Struct(person) == nil
+}
+
 func isEmailValid(mapEmail string, databaseEmail string) bool {
 	return mapEmail == databaseEmail
 }
@@ -90,7 +95,7 @@ func isPasswordValid(hashedPassword string, password string) bool {
 	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password)) == nil
 }
 
-func update(person model.Tables) error {
+func updateTokenUpdatedat(person model.Tables) error {
 	signedToken, errGenerate := token.GenerateToken(person.FirstName, person.LastName, person.Email, person.UserType)
 	if errGenerate != nil {
 		return errors.New("token generation failed")
