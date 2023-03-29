@@ -37,13 +37,12 @@ var pl = fmt.Printf
 
 func signUp() {
 	service.CreateUser(&c, dto.DtoSignUp{
-		Password:     "aaa",
-		Token:        "",
-		RefreshToken: "",
-		FirstName:    "",
-		LastName:     "",
-		Email:        "aaa",
-		UserType:     "",
+		Password:  "aaa",
+		Token:     "",
+		FirstName: "",
+		LastName:  "",
+		Email:     "aaa",
+		UserType:  "",
 	})
 }
 

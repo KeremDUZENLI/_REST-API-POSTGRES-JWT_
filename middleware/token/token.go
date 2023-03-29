@@ -2,6 +2,8 @@ package token
 
 import (
 	"postgre-project/common/env"
+	"postgre-project/database"
+	"postgre-project/database/model"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -16,7 +18,7 @@ type SignedDetails struct {
 	jwt.StandardClaims
 }
 
-func GenerateToken(firstName string, lastName string, email string, userType string) (token string, refreshToken string, err error) {
+func GenerateToken(firstName string, lastName string, email string, userType string) (token string, err error) {
 	var expiresAt int64 = time.Now().Local().Add(time.Hour * time.Duration(24)).Unix()
 
 	claims := &SignedDetails{
@@ -29,18 +31,7 @@ func GenerateToken(firstName string, lastName string, email string, userType str
 		},
 	}
 
-	refreshClaims := &SignedDetails{
-		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: expiresAt,
-		},
-	}
-
 	if token, err = jwt.NewWithClaims(jwt.SigningMethodHS256, claims).
-		SignedString([]byte(env.SECRET_KEY)); err != nil {
-		return
-	}
-
-	if refreshToken, err = jwt.NewWithClaims(jwt.SigningMethodHS256, refreshClaims).
 		SignedString([]byte(env.SECRET_KEY)); err != nil {
 		return
 	}
@@ -59,6 +50,18 @@ func ValidateToken(signedToken string) (*SignedDetails, error) {
 	}
 
 	return token.Claims.(*SignedDetails), nil
+}
+
+func UpdateToken(id uint, signedToken string) error {
+	updatedAt := time.Now()
+
+	return database.Instance.
+		Table(model.TABLE).
+		Where("id = ?", id).
+		Updates(map[string]interface{}{
+			"token":      signedToken,
+			"updated_at": updatedAt,
+		}).Error
 }
 
 func keyFunction(token *jwt.Token) (any, error) {

@@ -2,9 +2,8 @@ package dto
 
 // SignUp
 type DtoSignUp struct {
-	Password     string `gorm:"column:password"`
-	Token        string `gorm:"column:token"`
-	RefreshToken string `gorm:"column:refresh_token"`
+	Password string `gorm:"column:password"`
+	Token    string `gorm:"column:token"`
 
 	FirstName string `gorm:"column:first_name"`
 	LastName  string `gorm:"column:last_name"`
