@@ -11,7 +11,7 @@ import (
 
 func SignUp(c *gin.Context) {
 	var dto dto.DtoSignUp
-	if err := c.BindJSON(&dto); err != nil {
+	if err := c.ShouldBindJSON(&dto); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Could not bind JSON"})
 		return
 	}
@@ -26,7 +26,7 @@ func SignUp(c *gin.Context) {
 
 func LogIn(c *gin.Context) {
 	var dto dto.DtoLogIn
-	if err := c.BindJSON(&dto); err != nil {
+	if err := c.ShouldBindJSON(&dto); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Could not bind JSON"})
 		return
 	}

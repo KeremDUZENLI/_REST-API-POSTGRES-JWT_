@@ -2,18 +2,18 @@ package dto
 
 // SignUp
 type DtoSignUp struct {
-	Password string `gorm:"column:password" json:"password" validate:"required,min=6"`
+	Password string `json:"password" binding:"required"`
 
-	FirstName string `gorm:"column:first_name" json:"firstname" validate:"required,min=2,max=100"`
-	LastName  string `gorm:"column:last_name" json:"lastname" validate:"required,min=2,max=100"`
-	Email     string `gorm:"column:email" json:"email" validate:"email,required"`
-	UserType  string `gorm:"column:user_type" json:"usertype" validate:"required,eq=ADMIN|eq=USER"`
+	FirstName string `json:"firstname" binding:"required"`
+	LastName  string `json:"lastname" binding:"required"`
+	Email     string `json:"email" binding:"required"`
+	UserType  string `json:"usertype" binding:"required"`
 }
 
 // LogIn
 type DtoLogIn struct {
-	Email    string `gorm:"column:email" json:"email" validate:"email,required"`
-	Password string `gorm:"column:password" json:"password" validate:"required,min=6"`
+	Email    string `json:"email" binding:"required"`
+	Password string `json:"password" binding:"required"`
 }
 
 // GetUserById
