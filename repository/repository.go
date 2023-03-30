@@ -22,11 +22,11 @@ func NewRepository() PostgreRepository {
 // ----------------------------------------------------------------
 
 func (postgreRepository) AddToDatabase(person model.Tables) {
-	database.Instance.Table(model.TABLE).Create(&person)
+	database.ConnectDB().Table(model.TABLE).Create(&person)
 }
 
 func (postgreRepository) FindByEmail(person model.Tables) (model.Tables, error) {
-	if err := database.Instance.
+	if err := database.ConnectDB().
 		Table(model.TABLE).
 		Where("email = ?", person.Email).
 		First(&person).Error; err != nil {
@@ -38,7 +38,7 @@ func (postgreRepository) FindByEmail(person model.Tables) (model.Tables, error) 
 
 func (postgreRepository) GetInfoByIdFromDatabase(id int) (model.Tables, error) {
 	var person model.Tables
-	if err := database.Instance.
+	if err := database.ConnectDB().
 		Table(model.TABLE).
 		Where("id = ?", id).
 		First(&person).
@@ -51,7 +51,7 @@ func (postgreRepository) GetInfoByIdFromDatabase(id int) (model.Tables, error) {
 
 func (postgreRepository) GetInfosFromDatabase() ([]model.Tables, error) {
 	var infos []model.Tables
-	if err := database.Instance.
+	if err := database.ConnectDB().
 		Table(model.TABLE).
 		Find(&infos).
 		Error; err != nil {

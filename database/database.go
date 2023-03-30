@@ -10,18 +10,18 @@ import (
 	"gorm.io/gorm"
 )
 
-var Instance *gorm.DB
+var postgreDB *gorm.DB
 
 func ConnectDB() *gorm.DB {
-	if Instance != nil {
-		return Instance
+	if postgreDB != nil {
+		return postgreDB
 	}
 
 	url := dbUrl()
 	db := gormOpen(url)
 
-	Instance = db
-	return Instance
+	postgreDB = db
+	return postgreDB
 }
 
 // ----------------------------------------------------------------

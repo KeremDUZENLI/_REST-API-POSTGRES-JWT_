@@ -13,11 +13,15 @@ import (
 func main() {
 	env.Load()
 
-	database.ConnectDB()
-	database.Instance.AutoMigrate(&model.Tables{})
+	setDatabase()
 
 	router := setAllDependencies()
 	router.Run(env.ROUTER)
+}
+
+func setDatabase() {
+	database.ConnectDB()
+	database.ConnectDB().AutoMigrate(&model.Tables{})
 }
 
 func setAllDependencies() router.Router {

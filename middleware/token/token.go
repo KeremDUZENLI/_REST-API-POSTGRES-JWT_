@@ -55,7 +55,7 @@ func ValidateToken(signedToken string) (*SignedDetails, error) {
 func UpdateToken(id uint, signedToken string) error {
 	updatedAt := time.Now()
 
-	return database.Instance.
+	return database.ConnectDB().
 		Table(model.TABLE).
 		Where("id = ?", id).
 		Updates(map[string]interface{}{
