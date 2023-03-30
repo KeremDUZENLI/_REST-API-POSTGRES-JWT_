@@ -24,17 +24,6 @@ func ConnectDB() *gorm.DB {
 	return Instance
 }
 
-func CloseDB() {
-	db, err := Instance.DB()
-	if err != nil {
-		log.Fatal("can not get instance")
-	}
-
-	if err = db.Close(); err != nil {
-		log.Fatal("can not close database")
-	}
-}
-
 func dbUrl() string {
 	url_db := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s",
 		env.DB_HOST, env.DB_USER, env.DB_PASSWORD, env.DB_DBNAME, env.DB_PORT, env.DB_SSL)

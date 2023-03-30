@@ -16,7 +16,4 @@ func main() {
 
 	// Router
 	router.Router()
-
-	// Database Close
-	database.CloseDB()
 }
