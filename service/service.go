@@ -16,21 +16,38 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func CreateUser(c *gin.Context, dSU dto.DtoSignUp) error {
+type postgreService struct {
+	repository repository.PostgreRepository
+}
+
+type PostgreService interface {
+	CreateUser(c *gin.Context, dSU dto.DtoSignUp) error
+	FindUser(c *gin.Context, dLI dto.DtoLogIn) (logIn model.Tables, errLogIn error)
+	GetUserByID(c *gin.Context, personId int) (model.Tables, error)
+	GetUsersAll(c *gin.Context) ([]model.Tables, error)
+}
+
+func NewService(repo repository.PostgreRepository) PostgreService {
+	return &postgreService{repository: repo}
+}
+
+// ----------------------------------------------------------------
+
+func (pS postgreService) CreateUser(c *gin.Context, dSU dto.DtoSignUp) error {
 	aMap := mapper.MapperSignUp(&dSU)
-	if isUserExist(aMap) || !isObeyRules(aMap) {
+	if pS.isUserExist(aMap) || !isObeyRules(aMap) {
 		return errors.New("user already exists or can not created because out of rules")
 	}
 
 	setValues(&aMap)
-	repository.AddToDatabase(aMap)
+	pS.repository.AddToDatabase(aMap)
 
 	return nil
 }
 
-func FindUser(c *gin.Context, dLI dto.DtoLogIn) (logIn model.Tables, errLogIn error) {
+func (pS postgreService) FindUser(c *gin.Context, dLI dto.DtoLogIn) (logIn model.Tables, errLogIn error) {
 	aMap := mapper.MapperLogIn(&dLI)
-	logIn, errLogIn = repository.FindByEmail(aMap)
+	logIn, errLogIn = pS.repository.FindByEmail(aMap)
 	if errLogIn != nil {
 		return
 	}
@@ -43,26 +60,27 @@ func FindUser(c *gin.Context, dLI dto.DtoLogIn) (logIn model.Tables, errLogIn er
 		return
 	}
 
-	return repository.GetInfoByIdFromDatabase(int(logIn.ID))
+	return pS.repository.GetInfoByIdFromDatabase(int(logIn.ID))
 }
 
-func GetUserByID(c *gin.Context, personId int) (model.Tables, error) {
+func (pS postgreService) GetUserByID(c *gin.Context, personId int) (model.Tables, error) {
 	if err := auth.IsAdmin(c); err != nil {
 		return model.Tables{}, err
 	}
 
-	return repository.GetInfoByIdFromDatabase(personId)
+	return pS.repository.GetInfoByIdFromDatabase(personId)
 }
 
-func GetUsersAll(c *gin.Context) ([]model.Tables, error) {
+func (pS postgreService) GetUsersAll(c *gin.Context) ([]model.Tables, error) {
 	if err := auth.IsAdmin(c); err != nil {
 		return []model.Tables{}, err
 	}
 
-	return repository.GetInfosFromDatabase()
+	return pS.repository.GetInfosFromDatabase()
 }
 
 // ----------------------------------------------------------------
+
 func setValues(person *model.Tables) error {
 	person.Password, _ = middleware.HashPassword(person.Password)
 	_, errPassword := middleware.HashPassword(person.Password)
@@ -77,8 +95,8 @@ func setValues(person *model.Tables) error {
 	return nil
 }
 
-func isUserExist(person model.Tables) bool {
-	_, err := repository.FindByEmail(person)
+func (pS postgreService) isUserExist(person model.Tables) bool {
+	_, err := pS.repository.FindByEmail(person)
 
 	return err == nil
 }

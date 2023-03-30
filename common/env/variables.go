@@ -15,6 +15,8 @@ var (
 	DB_SSL      string
 
 	SECRET_KEY string
+
+	ROUTER string
 )
 
 func Load() {
@@ -28,4 +30,6 @@ func Load() {
 	DB_SSL = os.Getenv("DB_SSL")
 
 	SECRET_KEY = os.Getenv("SECRET_KEY")
+
+	ROUTER = os.Getenv("ROUTER")
 }

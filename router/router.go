@@ -1,22 +1,49 @@
 package router
 
 import (
-	"net/http"
 	"postgre-project/controller"
 	"postgre-project/middleware"
 
 	"github.com/gin-gonic/gin"
 )
 
-func Router() {
-	ginRouter := gin.Default()
+type router struct {
+	controller controller.User
+	engine     *gin.Engine
+}
 
-	ginRouter.POST("/signup", controller.SignUp)
-	ginRouter.POST("/login", controller.LogIn)
+type Router interface {
+	Run(host string)
+}
 
-	ginRouter.Use(middleware.Authenticate)
-	ginRouter.GET("/getuser/:user_id", controller.GetUser)
-	ginRouter.GET("/getusers", controller.GetUsers)
+func NewRouter(cont controller.User) Router {
+	return &router{controller: cont}
+}
 
-	http.ListenAndServe(":9999", ginRouter)
+// ----------------------------------------------------------------
+
+func (r router) Run(host string) {
+	r.engine = gin.New()
+
+	r.setup()
+
+	r.engine.Run(host)
+}
+
+func (r router) setup() {
+	r.engine.Use(gin.Logger())
+
+	r.postRoutes()
+	r.getRoutes()
+}
+
+func (r router) postRoutes() {
+	r.engine.POST("/signup", r.controller.SignUp)
+	r.engine.POST("/login", r.controller.LogIn)
+}
+
+func (r router) getRoutes() {
+	r.engine.Use(middleware.Authenticate)
+	r.engine.GET("/getuser/:user_id", r.controller.GetUser)
+	r.engine.GET("/getusers", r.controller.GetUsers)
 }

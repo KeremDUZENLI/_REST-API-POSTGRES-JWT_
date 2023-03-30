@@ -24,6 +24,8 @@ func ConnectDB() *gorm.DB {
 	return Instance
 }
 
+// ----------------------------------------------------------------
+
 func dbUrl() string {
 	url_db := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s",
 		env.DB_HOST, env.DB_USER, env.DB_PASSWORD, env.DB_DBNAME, env.DB_PORT, env.DB_SSL)

@@ -6,11 +6,26 @@ import (
 	"postgre-project/database/model"
 )
 
-func AddToDatabase(person model.Tables) {
+type postgreRepository struct{}
+
+type PostgreRepository interface {
+	AddToDatabase(person model.Tables)
+	FindByEmail(person model.Tables) (model.Tables, error)
+	GetInfoByIdFromDatabase(id int) (model.Tables, error)
+	GetInfosFromDatabase() ([]model.Tables, error)
+}
+
+func NewRepository() PostgreRepository {
+	return &postgreRepository{}
+}
+
+// ----------------------------------------------------------------
+
+func (postgreRepository) AddToDatabase(person model.Tables) {
 	database.Instance.Table(model.TABLE).Create(&person)
 }
 
-func FindByEmail(person model.Tables) (model.Tables, error) {
+func (postgreRepository) FindByEmail(person model.Tables) (model.Tables, error) {
 	if err := database.Instance.
 		Table(model.TABLE).
 		Where("email = ?", person.Email).
@@ -21,7 +36,7 @@ func FindByEmail(person model.Tables) (model.Tables, error) {
 	return person, nil
 }
 
-func GetInfoByIdFromDatabase(id int) (model.Tables, error) {
+func (postgreRepository) GetInfoByIdFromDatabase(id int) (model.Tables, error) {
 	var person model.Tables
 	if err := database.Instance.
 		Table(model.TABLE).
@@ -34,7 +49,7 @@ func GetInfoByIdFromDatabase(id int) (model.Tables, error) {
 	return person, nil
 }
 
-func GetInfosFromDatabase() ([]model.Tables, error) {
+func (postgreRepository) GetInfosFromDatabase() ([]model.Tables, error) {
 	var infos []model.Tables
 	if err := database.Instance.
 		Table(model.TABLE).
